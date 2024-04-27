@@ -85,10 +85,10 @@ class MyApp extends StatefulWidget {
   List<Skill> skills;
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => _MyApp();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyApp extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,17 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MyHomePage(),
+        home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            toolbarHeight: 0,
+          ),
+          body: const MyHomePage(),
+          bottomNavigationBar: const SizedBox(
+              height: 90,
+              child: DamageContainer()
+          ),
+        )
       ),
     );
   }
@@ -673,47 +683,12 @@ class _MyHomePageState extends State<MyHomePage> {
               pokeMap = attackState.poke;
               dfPokeMap = defenceState.dfPoke;
             },
-            child: Scaffold(
-              body: Center(
-                child: page,
-              ),
-            ),
+            child: page
           );
         }
     );
   }
 }
-
-/*class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}): super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    Widget page;
-    page = const DamageCalcPage();
-    return LayoutBuilder(
-        builder: (context, constraints) {
-          return PopScope(
-            canPop: true,
-            onPopInvoked: (bool didPop) {
-              if (didPop) {
-                context.read<MyAppState>().backKeyPressed();
-                return;
-              }
-              attackState = spareAttackState;
-              defenceState = spareDefenceState;
-              pokeMap = attackState.poke;
-              dfPokeMap = defenceState.dfPoke;
-            },
-            child: Scaffold(
-              body: Center(
-                child: page,
-              ),
-            ),
-          );
-        }
-    );
-  }
-}*/
 
 class DamageCalcPage extends StatefulWidget{
   const DamageCalcPage({super.key});
@@ -741,7 +716,6 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
   @override
   Widget build(BuildContext context){
     var myState = context.watch<MyAppState>();
-    var atWidgetState = AtState(myState.atPoke, myState.teraImage, myState.atSliderVal, myState.atNatPos, myState.atRankPos, myState.selectedSkill, myState.teraIcon);
     skillList = myState.skillList;
     var classification = myState.physOrSpe;
     if(classification == "特殊"){
@@ -770,89 +744,80 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
       myState.damageCalc();
     });
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          toolbarHeight: 0,
-        ),
-        body: Column(
-          children: [
-            Flexible(
-              child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      Container(
-                        color: const Color(0xfff5f5f5),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            children: [
-                              AttackerWidget(atState: atWidgetState),
-                              const SizedBox(height: 5,),
-                              IconButton(
-                                icon: Container(
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                  ),
-                                  child: const Icon(
-                                    change_circle_outlined,
-                                    size: 50,
-                                  ),
-                                ),
-                                tooltip: '攻守反転',
-                                onPressed: () async{
-                                  myState.damageList = [];
-                                  myState.widgetList = [];
-                                  savedDamageList = [];
-                                  damageWidgetList = [];
-                                  minMaxSumList = [];
-                                  reCalcList = [];
-                                  skillList = await DatabaseHelper.customSkillList(dfPokeMap.skill1, dfPokeMap.skill2, dfPokeMap.skill3, dfPokeMap.skill4, dfPokeMap.skill5) as List<Skill>;
-                                  spareAttackState = AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
-                                  spareDefenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
-                                  setState(() {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) => MyApp(atState: AttackState(poke: dfPokeMap, teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: dfPokeMap.char1, atSp: false, atEffect: '', skill: skillList.first, teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false), dfState: DefenceState(dfPoke: pokeMap, hSliderVal: 0, hEffort: 0, bSliderVal: 0, bEffort: 0, bNatPos: 1, dSliderVal: 0, dEffort: 0, dNatPos: 1, bRankPos: 6, dRankPos: 6, dfSpCh: pokeMap.char1, dfSp: false, dfTeraType: 'null', dfTeraImage: Image.asset('images/not_selected.png'), dfEffect: ''), skills: skillList),
-                                          settings: RouteSettings(
-                                              arguments: DfState(dfPokeMap, myState.hSliderVal, myState.bSliderVal, myState.dSliderVal, myState.bNatPos, myState.dNatPos)
-                                          )
-                                      ),
-                                    );
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 5,),
-                              const DefenceWidget(),
-                              const SizedBox(height: 20,),
-                              const EnviContainer(),
-                              DamageListWidget(damageList: myState.widgetList)
-                            ],
-                          ),
-                        ),
+    return Column(
+      children: [
+        Flexible(
+          child: CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Container(
+                    color: const Color(0xfff5f5f5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          const AttackerWidget(),
+                          const SizedBox(height: 5,),
+                          buildIconButton(myState, context),
+                          const SizedBox(height: 5,),
+                          const DefenceWidget(),
+                          const SizedBox(height: 20,),
+                          const EnviContainer(),
+                          DamageListWidget(damageList: myState.widgetList)
+                        ],
                       ),
-                    ]),
+                    ),
                   ),
-                ],
+                ]),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        bottomNavigationBar: const SizedBox(
-          height: 90,
-            child: DamageContainer()
+      ],
+    );
+  }
+
+  IconButton buildIconButton(MyAppState myState, BuildContext context) {
+    return IconButton(
+      icon: Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+        ),
+        child: const Icon(
+          change_circle_outlined,
+          size: 50,
         ),
       ),
+      tooltip: '攻守反転',
+      onPressed: () async{
+        myState.damageList = [];
+        myState.widgetList = [];
+        savedDamageList = [];
+        damageWidgetList = [];
+        minMaxSumList = [];
+        reCalcList = [];
+        skillList = await DatabaseHelper.customSkillList(dfPokeMap.skill1, dfPokeMap.skill2, dfPokeMap.skill3, dfPokeMap.skill4, dfPokeMap.skill5) as List<Skill>;
+        spareAttackState = AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
+        spareDefenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
+        setState(() {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => MyApp(atState: AttackState(poke: dfPokeMap, teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: dfPokeMap.char1, atSp: false, atEffect: '', skill: skillList.first, teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false), dfState: DefenceState(dfPoke: pokeMap, hSliderVal: 0, hEffort: 0, bSliderVal: 0, bEffort: 0, bNatPos: 1, dSliderVal: 0, dEffort: 0, dNatPos: 1, bRankPos: 6, dRankPos: 6, dfSpCh: pokeMap.char1, dfSp: false, dfTeraType: 'null', dfTeraImage: Image.asset('images/not_selected.png'), dfEffect: ''), skills: skillList),
+                settings: RouteSettings(
+                    arguments: DfState(dfPokeMap, myState.hSliderVal, myState.bSliderVal, myState.dSliderVal, myState.bNatPos, myState.dNatPos)
+                )
+            ),
+          );
+        });
+        },
     );
   }
 }
 
 class AttackerWidget extends StatefulWidget{
-  final AtState atState;
-  const AttackerWidget({super.key, required this.atState});
+  const AttackerWidget({super.key});
 
   @override
   State<AttackerWidget> createState() => _AttackerWidgetState();
@@ -860,7 +825,6 @@ class AttackerWidget extends StatefulWidget{
 
 class _AttackerWidgetState extends State<AttackerWidget>  {
   final pokeList = pokeInfo;
-  final TextEditingController _textSkillEditingController = TextEditingController();
   final double _currentSliderVal = 0;
   int bTribe = pokeMap.bTribe;
   int atState = pokeMap.aTribe;
@@ -875,10 +839,11 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
 
   var skillList = listMap;
   static String _displaySkillStringForOption(Skill option) => option.name;
+  final TextEditingController _textSkillEditingController = TextEditingController();
   @override
   Widget build(BuildContext context){
     var myState = context.watch<MyAppState>();
-    var atWidgetState = widget.atState;
+    var atWidgetState = AtState(myState.atPoke, myState.teraImage, myState.atSliderVal, myState.atNatPos, myState.atRankPos, myState.selectedSkill, myState.teraIcon);
     skillList = myState.skillList;
     var classification = myState.physOrSpe;
     if(classification == "特殊"){
@@ -1032,7 +997,7 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
                           PokeDetailWidget(atState: DetailClassPath('at', myState.atPoke, atWidgetState.teraImage)),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                            children: <Widget>[
                               const SizedBox(height: 10,),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -1051,10 +1016,18 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
                               EffortSeekBarWidget(state: NumericalState('a', myState.aActual, myState.atSliderVal, myState.atEffort, myState.atNatPos)),
                               NatRankWidget(natState: NatClassPath('a', myState.atNatPos, myState.atRankPos),),
                               SpEffectWidget(spEfState: SpEffectClassPath('at', myState.atPoke)),
-                              const SizedBox(height: 10,),
+                              const SizedBox(height: 5,),
+                              const Text(
+                                "攻撃技",
+                                style: TextStyle(
+                                    fontSize: 16
+                                ),
+                              ),
+                              const SizedBox(height: 5,),
                               Row(
-                                children: [
-                                  SizedBox(
+                                children: <Widget>[
+                                  const SkillDialogWidget(),
+                                  /*SizedBox(
                                     width: 200,
                                     height: 60,
                                     child:Autocomplete<Skill>(
@@ -1105,18 +1078,6 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
                                           ),
                                         );
                                       },
-                                      /*optionsViewBuilder: (context, onSelected, skillList){
-                                        return ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: skillList.length,
-
-                                          itemBuilder: ((context, index){
-                                            final skills = skillList.toList();
-                                            return SkillWidget(skills: skills[index]);
-                                          })
-                                        );
-                                      }*/
-
                                       optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Skill> onSelected, skillList){
                                         return Align(
                                           alignment: Alignment.topLeft,
@@ -1160,7 +1121,7 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
                                         );
                                       },
                                     ),
-                                  ),
+                                  ),*/
                                   const SizedBox(width: 10,),
                                   GestureDetector(
                                     onTap: (){
@@ -1290,7 +1251,8 @@ class _DefenceWidgetState extends State<DefenceWidget> {
                             }
                           });
                         },
-                        icon: offsetIcon)
+                        icon: offsetIcon
+                    )
                   ],
                 ),
               ),
@@ -3566,6 +3528,148 @@ class _SpCharacteristicState extends State<SpCharacteristic> {
           );
         },
       ),
+    );
+  }
+}
+
+class SkillDialogWidget extends StatefulWidget{
+  const SkillDialogWidget({super.key});
+
+  @override
+  State<SkillDialogWidget> createState() => _SkillDialogWidgetState();
+}
+
+class _SkillDialogWidgetState extends State<SkillDialogWidget> {
+  static String _displaySkillStringForOption(Skill option) => option.name;
+  final TextEditingController _textSkillEditingController = TextEditingController();
+  @override
+  Widget build(BuildContext context){
+    var myAppState = context.watch<MyAppState>();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          child: Container(
+            width: 170,
+            height: 50,
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+            ),
+
+            child: Center(
+              child: Text(
+                  myAppState.selectedSkill.name,
+                style: const TextStyle(
+                  fontSize: 18
+                ),
+              ),
+            ),
+          ),
+          onTap: () => showDialog(
+            context: context,
+            builder: (BuildContext context) => Dialog(
+              child: SizedBox(
+                width: 200,
+                height: 60,
+                child:Autocomplete<Skill>(
+                  initialValue: TextEditingValue(text: myAppState.selectedSkill.name),
+                  displayStringForOption: _displaySkillStringForOption,
+                  optionsBuilder: (TextEditingValue textEditingValue) { // 3.
+                    if (textEditingValue.text == '') {
+                      return skillList;
+                    }
+                    return skillList.where((Skill option) {// 4.
+                      return option.name.toString().contains(textEditingValue.text) | option.anotherName.toString().contains(textEditingValue.text);
+                    });
+                  },
+                  onSelected: (Skill skill) { // 5.
+                    setState(() {
+                      myAppState.skillChanged(skill);
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    });
+                  },
+                  fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                    return TextFormField(
+                      controller: textEditingController,
+                      focusNode: focusNode,
+                      onFieldSubmitted: (String value) {
+                        onFieldSubmitted();
+                      },
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        labelStyle: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white30,
+                        ),
+                        labelText: '攻撃技',
+                        floatingLabelStyle: const TextStyle(fontSize: 16),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                            color: Colors.purple,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Skill> onSelected, skillList){
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        height: 420,
+                        color: Colors.transparent,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10,),
+                            Container(
+                              width: 240,
+                              height: 400,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                border: Border.all(
+                                    color: const Color(0xffc7c7ff)
+                                ),
+                                color: const Color(0xFFe6e6fa),
+                              ),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.all(10),
+                                itemCount: skillList.length,
+                                itemBuilder: (BuildContext context, int index){
+                                  final Skill skills = skillList.elementAt(index);
+                                  return GestureDetector(
+                                    onTap: (){
+                                      _textSkillEditingController.text = skills.name;
+                                      onSelected(skills);
+                                      Navigator.pop(context);
+                                    },
+                                    child: SkillWidget(skills: skills),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
+          ),
+        ),
+      ],
     );
   }
 }
