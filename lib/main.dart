@@ -3551,119 +3551,120 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
       children: [
         GestureDetector(
           child: Container(
-            width: 170,
+            width: 200,
             height: 50,
             decoration: BoxDecoration(
               border: Border.all(),
               borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
-
-            child: Center(
-              child: Text(
-                  myAppState.selectedSkill.name,
-                style: const TextStyle(
-                  fontSize: 18
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 5),
+                    Text(
+                      myAppState.selectedSkill.name,
+                      style: const TextStyle(
+                          fontSize: 18
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              ]
             ),
           ),
           onTap: () => showDialog(
             context: context,
             builder: (BuildContext context) => Dialog(
               child: SizedBox(
-                width: 200,
-                height: 60,
-                child:Autocomplete<Skill>(
-                  initialValue: TextEditingValue(text: myAppState.selectedSkill.name),
-                  displayStringForOption: _displaySkillStringForOption,
-                  optionsBuilder: (TextEditingValue textEditingValue) { // 3.
-                    if (textEditingValue.text == '') {
-                      return skillList;
-                    }
-                    return skillList.where((Skill option) {// 4.
-                      return option.name.toString().contains(textEditingValue.text) | option.anotherName.toString().contains(textEditingValue.text);
-                    });
-                  },
-                  onSelected: (Skill skill) { // 5.
-                    setState(() {
-                      myAppState.skillChanged(skill);
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    });
-                  },
-                  fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
-                    return TextFormField(
-                      controller: textEditingController,
-                      focusNode: focusNode,
-                      onFieldSubmitted: (String value) {
-                        onFieldSubmitted();
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Autocomplete<Skill>(
+                      initialValue: TextEditingValue(text: myAppState.selectedSkill.name),
+                      displayStringForOption: _displaySkillStringForOption,
+                      optionsBuilder: (TextEditingValue textEditingValue) { // 3.
+                        if (textEditingValue.text == '') {
+                          return skillList;
+                        }
+                        return skillList.where((Skill option) {// 4.
+                          return option.name.toString().contains(textEditingValue.text) | option.anotherName.toString().contains(textEditingValue.text);
+                        });
                       },
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
-                          ),
-                        ),
-                        labelStyle: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white30,
-                        ),
-                        labelText: '攻撃技',
-                        floatingLabelStyle: const TextStyle(fontSize: 16),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Colors.purple,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Skill> onSelected, skillList){
-                    return Align(
-                      alignment: Alignment.topLeft,
-                      child: Container(
-                        height: 420,
-                        color: Colors.transparent,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            Container(
-                              width: 240,
-                              height: 400,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                                border: Border.all(
-                                    color: const Color(0xffc7c7ff)
-                                ),
-                                color: const Color(0xFFe6e6fa),
+                      onSelected: (Skill skill) { // 5.
+                        setState(() {
+                          myAppState.skillChanged(skill);
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        });
+                      },
+                      fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                        return TextFormField(
+                          controller: textEditingController,
+                          focusNode: focusNode,
+                          onFieldSubmitted: (String value) {
+                            onFieldSubmitted();
+                          },
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(22),
+                                topRight: Radius.circular(22)
                               ),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.all(10),
-                                itemCount: skillList.length,
-                                itemBuilder: (BuildContext context, int index){
-                                  final Skill skills = skillList.elementAt(index);
-                                  return GestureDetector(
-                                    onTap: (){
-                                      _textSkillEditingController.text = skills.name;
-                                      onSelected(skills);
-                                      Navigator.pop(context);
-                                    },
-                                    child: SkillWidget(skills: skills),
-                                  );
-                                },
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.0,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                            labelText: '攻撃技',
+                            floatingLabelStyle: TextStyle(fontSize: 16),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(22),
+                                  topRight: Radius.circular(22)
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.purple,
+                                width: 1.0,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Skill> onSelected, skillList){
+                        return Align(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              SizedBox(
+                                width: 330,
+                                height: 400,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(10),
+                                  itemCount: skillList.length,
+                                  itemBuilder: (BuildContext context, int index){
+                                    final Skill skills = skillList.elementAt(index);
+                                    return GestureDetector(
+                                      onTap: (){
+                                        _textSkillEditingController.text = skills.name;
+                                        onSelected(skills);
+                                        Navigator.pop(context);
+                                      },
+                                      child: SkillWidget(skills: skills),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             )
