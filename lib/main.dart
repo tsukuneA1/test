@@ -341,6 +341,14 @@ class MyAppState extends ChangeNotifier{
         atActualCalc(classification, atSliderVal, atNatPos);
         selectedSkill = Skill(name: 'テラバースト', power: 100, type: 'ステラ', anotherName: 'てらばーすと', classification: classification);
       }
+    }else if(skill.name == "テラクラスター"){
+      if(atPoke.pokeName == "テラパゴス(ステラ)"){
+        atTeraType == 'ステラ';
+        stellaBlastFlag = false;
+        teraBlastFlag = true;
+        atActualCalc(teraPhysOrSpe, atSliderVal, atNatPos);
+        selectedSkill = Skill(name: 'テラクラスター', power: 120, type: 'ステラ', anotherName: 'てらくらすたー', classification: '特殊');
+      }
     }else{
       teraBlastFlag = true;
       stellaBlastFlag = true;
@@ -411,6 +419,10 @@ class MyAppState extends ChangeNotifier{
       if(selectedSkill.name == 'テラバースト'){
         teraPhysOrSpe = classification;
         selectedSkill = Skill(name: 'テラバースト', power: 100, type: 'ステラ', anotherName: 'てらばーすと', classification: classification);
+        skillChanged(selectedSkill);
+        stellaBlastFlag = false;
+      }else if(selectedSkill.name == 'テラクラスター'){
+        selectedSkill = Skill(name: 'テラクラスター', power: 120, type: 'ステラ', anotherName: 'てらくらすたー', classification: '特殊');
         skillChanged(selectedSkill);
         stellaBlastFlag = false;
       }
@@ -734,6 +746,13 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
     }else if(natVal == natList[2].toString()){
       doubleActualVal = (doubleActualVal*0.9);
     }
+    if(myState.atPoke.pokeName == "テラパゴス(ステラ)"){
+      myState.stellaFlag = true;
+      myState.teraBlastFlag = true;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        myState.teraStateChanged('ステラ');
+      });
+    }
     if(myState.firstFlag){
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         myState.skillChanged(myState.selectedSkill);
@@ -980,101 +999,6 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
                               Row(
                                 children: <Widget>[
                                   const SkillDialogWidget(),
-                                  /*SizedBox(
-                                    width: 200,
-                                    height: 60,
-                                    child:Autocomplete<Skill>(
-                                      initialValue: TextEditingValue(text: myState.selectedSkill.name),
-                                      displayStringForOption: _displaySkillStringForOption,
-                                      optionsBuilder: (TextEditingValue textEditingValue) { // 3.
-                                        if (textEditingValue.text == '') {
-                                          return skillList;
-                                        }
-                                        return skillList.where((Skill option) {// 4.
-                                          return option.name.toString().contains(textEditingValue.text) | option.anotherName.toString().contains(textEditingValue.text);
-                                        });
-                                      },
-                                      onSelected: (Skill skill) { // 5.
-                                        setState(() {
-                                          myState.skillChanged(skill);
-                                          FocusManager.instance.primaryFocus?.unfocus();
-                                        });
-                                      },
-                                      fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
-                                        return TextFormField(
-                                          controller: textEditingController,
-                                          focusNode: focusNode,
-                                          onFieldSubmitted: (String value) {
-                                            onFieldSubmitted();
-                                          },
-                                          decoration: InputDecoration(
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(16),
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                                width: 1.0,
-                                              ),
-                                            ),
-                                            labelStyle: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white30,
-                                            ),
-                                            labelText: '攻撃技',
-                                            floatingLabelStyle: const TextStyle(fontSize: 16),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(16),
-                                              borderSide: const BorderSide(
-                                                color: Colors.purple,
-                                                width: 1.0,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Skill> onSelected, skillList){
-                                        return Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Container(
-                                            height: 420,
-                                            color: Colors.transparent,
-                                            child: Column(
-                                              children: [
-                                                const SizedBox(height: 10,),
-                                                Container(
-                                                  width: 240,
-                                                  height: 400,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: const BorderRadius.all(
-                                                      Radius.circular(20),
-                                                    ),
-                                                    border: Border.all(
-                                                        color: const Color(0xffc7c7ff)
-                                                    ),
-                                                    color: const Color(0xFFe6e6fa),
-                                                  ),
-                                                  child: ListView.builder(
-                                                    shrinkWrap: true,
-                                                    padding: const EdgeInsets.all(10),
-                                                    itemCount: skillList.length,
-                                                    itemBuilder: (BuildContext context, int index){
-                                                      final Skill skills = skillList.elementAt(index);
-                                                      return GestureDetector(
-                                                        onTap: (){
-                                                          _textSkillEditingController.text = skills.name;
-                                                          onSelected(skills);
-                                                        },
-                                                        child: SkillWidget(skills: skills),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),*/
                                   const SizedBox(width: 10,),
                                   GestureDetector(
                                     onTap: (){
