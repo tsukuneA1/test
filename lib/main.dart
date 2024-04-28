@@ -925,54 +925,7 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
 
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            border: Border.all(
-                color: const Color(0xffc7c7ff)
-            ),
-            color: const Color(0xFFe6e6fa),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.edit_off),
-                    const SizedBox(width: 10,),
-                    const Text(
-                      'Attacker',
-                      style: TextStyle(
-                          fontSize: 20
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    IconButton(
-                        onPressed: (){
-                          setState(() {
-                            if(myState.atContainerOffStage){
-                              myState.atContainerOffStage = false;
-                            }else{
-                              myState.atContainerOffStage = true;
-                            }
-                          });
-                        },
-                        icon: offsetIcon
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        TopTabContainer(tabIcon: const Icon(Icons.edit_off), offsetIcon: offsetIcon, tabType: "Attacker"),
         Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
@@ -1211,59 +1164,12 @@ class _DefenceWidgetState extends State<DefenceWidget> {
     }
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-            border: Border.all(
-                color: const Color(0xffc7c7ff)
-            ),
-            color: const Color(0xFFe6e6fa),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.verified_user),
-                    const SizedBox(width: 10,),
-                    const Text(
-                      'Defender',
-                      style: TextStyle(
-                          fontSize: 20
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    IconButton(
-                        onPressed: (){
-                          setState(() {
-                            if(myAppState.dfContainerOffStage){
-                              myAppState.dfContainerOffStage = false;
-                            }else{
-                              myAppState.dfContainerOffStage = true;
-                            }
-                          });
-                        },
-                        icon: offsetIcon
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        TopTabContainer(tabIcon: const Icon(Icons.verified_user), offsetIcon: offsetIcon, tabType: "Defender"),
         Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
-              bottomRight: Radius.circular(10),
-              bottomLeft: Radius.circular(10)
+              bottomRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20)
             ),
             color: Colors.white,
             border: Border.all(
@@ -1972,7 +1878,6 @@ class _SpEffectWidgetState extends State<SpEffectWidget> {
     List<String> spChList = <String>[spEfState.poke.char1];
     spChList.add(spEfState.poke.char2);
     spChList.add(spEfState.poke.char3);
-    String spChVal = spChList[0];
     var poke = spEfState.poke;
     var initialChar = <Ability>[];
     var another1 = charList.where((Ability option){return poke.char1 == option.ability;}).first.another;
@@ -2018,7 +1923,7 @@ class _SpEffectWidgetState extends State<SpEffectWidget> {
             ),
             Row(
               children: [
-                SpCharacteristic(initialCharList: initialChar, aOrD: spEfState.aOrD),
+                SpChDialogWidget(initialCharList: initialChar, aOrD: spEfState.aOrD),
                 Checkbox(
                     checkColor: Colors.purple,
                     fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -2106,58 +2011,12 @@ class _EnviContainerState extends State<EnviContainer> {
     }
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-            border: Border.all(
-                color: const Color(0xffc7c7ff)
-            ),
-            color: const Color(0xFFe6e6fa),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.sunny_snowing),
-                    const SizedBox(width: 10,),
-                    const Text(
-                      '環境',
-                      style: TextStyle(
-                          fontSize: 20
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    IconButton(
-                        onPressed: (){
-                          setState(() {
-                            if(myAppState.envContainerOffStage){
-                              myAppState.envContainerOffStage = false;
-                            }else{
-                              myAppState.envContainerOffStage = true;
-                            }
-                          });
-                        },
-                        icon: offsetIcon)
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        TopTabContainer(tabIcon: const Icon(Icons.sunny_snowing), offsetIcon: offsetIcon, tabType: "環境"),
         Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10)
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20)
             ),
             color: Colors.white,
             border: Border.all(
@@ -3567,7 +3426,7 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
                     Text(
                       myAppState.selectedSkill.name,
                       style: const TextStyle(
-                          fontSize: 18
+                          fontSize: 16
                       ),
                     ),
                   ],
@@ -3675,6 +3534,165 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
   }
 }
 
+class SpChDialogWidget extends StatefulWidget{
+  final List<Ability> initialCharList;
+  final String aOrD;
+  const SpChDialogWidget({super.key, required this.initialCharList, required this.aOrD});
+
+  @override
+  State<SpChDialogWidget> createState() => _SpChDialogWidgetState();
+}
+
+class _SpChDialogWidgetState extends State<SpChDialogWidget> {
+  final TextEditingController _textEditingController = TextEditingController();
+  static String _displayStringForOption(Ability option) => option.ability;
+  @override
+  Widget build(BuildContext context){
+    var myAppState = context.watch<MyAppState>();
+    var retList = widget.initialCharList;
+    retList = abilityCheck(charList, retList);
+    var spCh = myAppState.atSpChString;
+    if(widget.aOrD == "df"){
+      spCh = myAppState.dfSpChString;
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          child: Container(
+            width: 150,
+            height: 50,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                    color: Colors.grey
+                ),
+              ),
+            ),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const SizedBox(width: 5),
+                      Text(
+                        spCh,
+                        style: const TextStyle(
+                            fontSize: 16
+                        ),
+                      ),
+                    ],
+                  ),
+                ]
+            ),
+          ),
+          onTap: () => showDialog(
+              context: context,
+              builder: (BuildContext context) => Dialog(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Autocomplete<Ability>(
+                        initialValue: TextEditingValue(text: spCh),
+                        displayStringForOption: _displayStringForOption,
+                        optionsBuilder: (TextEditingValue textEditingValue) { // 3.
+                          if (textEditingValue.text == '') {
+                            return retList;
+                          }
+                          return retList.where((Ability option) {
+                            return option.ability.toString().contains(textEditingValue.text.toLowerCase()) | option.another.toString().contains(textEditingValue.text.toLowerCase());
+                          });
+                        },
+                        onSelected: (Ability selection) {
+                          _textEditingController.text = selection.ability;
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          setState(() {
+                            if(widget.aOrD == 'at'){
+                              myAppState.atSpChChanged(selection.ability.toString(), myAppState.atSpCh);
+                            }else{
+                              myAppState.dfSpChChanged(selection.ability.toString(), myAppState.dfSpCh);
+                            }
+                          });
+                        },
+                        fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                          return TextFormField(
+                            controller: textEditingController,
+                            focusNode: focusNode,
+                            onFieldSubmitted: (String value) {
+                              onFieldSubmitted();
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(22),
+                                    topRight: Radius.circular(22)
+                                ),
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                              ),
+                              labelText: '特性',
+                              floatingLabelStyle: TextStyle(fontSize: 16),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(22),
+                                    topRight: Radius.circular(22)
+                                ),
+                                borderSide: BorderSide(
+                                  color: Colors.purple,
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Ability> onSelected, retList){
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                SizedBox(
+                                  width: 330,
+                                  height: 400,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(10),
+                                    itemCount: retList.length,
+                                    itemBuilder: (BuildContext context, int index){
+                                      final Ability abilities = retList.elementAt(index);
+                                      return GestureDetector(
+                                        onTap: (){
+                                          _textEditingController.text = abilities.ability;
+                                          onSelected(abilities);
+                                          Navigator.pop(context);
+                                        },
+                                        child: AbilityCard(abilities: abilities),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              )
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class SavedDamage{
   SavedDamage({
     required this.id,
@@ -3705,6 +3723,86 @@ class DamageDialogPath{
   String spCh;
   String effect;
   String teraType;
+}
+
+class TopTabContainer extends StatefulWidget{
+  final Icon tabIcon;
+  final Icon offsetIcon;
+  final String tabType;
+  const TopTabContainer({super.key, required this.tabIcon, required this.offsetIcon, required this.tabType});
+
+  @override
+  State<TopTabContainer> createState() => _TopTabContainerState();
+}
+
+class _TopTabContainerState extends State<TopTabContainer> {
+  @override
+  Widget build(BuildContext context){
+    var myAppState = context.watch<MyAppState>();
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        border: Border.all(
+            color: const Color(0xffc7c7ff)
+        ),
+        color: const Color(0xFFe6e6fa),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            child: Row(
+              children: [
+                widget.tabIcon,
+                const SizedBox(width: 10,),
+                Text(
+                  widget.tabType,
+                  style: const TextStyle(
+                      fontSize: 20
+                  ),
+                ),
+                const Expanded(child: SizedBox()),
+                IconButton(
+                    onPressed: (){
+                      setState(() {
+                        if(widget.tabType == "Attacker"){
+                          if(myAppState.atContainerOffStage){
+                            myAppState.atContainerOffStage = false;
+                          }else{
+                            myAppState.atContainerOffStage = true;
+                          }
+                        }else if(widget.tabType == "Defender"){
+                          if(myAppState.dfContainerOffStage){
+                            myAppState.dfContainerOffStage = false;
+                          }else{
+                            myAppState.dfContainerOffStage = true;
+                          }
+                        }else if(widget.tabType == "環境"){
+                          if(myAppState.envContainerOffStage){
+                            myAppState.envContainerOffStage = false;
+                          }else{
+                            myAppState.envContainerOffStage = true;
+                          }
+                        }
+
+                      });
+                    },
+                    icon: widget.offsetIcon
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class Skill {
