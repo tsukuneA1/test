@@ -14,7 +14,6 @@ import 'function.dart';
 import 'df_poke_select.dart';
 import 'char_database.dart';
 import 'class_root.dart';
-import 'widget_class.dart';
 import 'ability_widget.dart';
 
 const List<String> natList = <String>['×1.1', '×1.0', '×0.9'];
@@ -112,6 +111,7 @@ class _MyApp extends State<MyApp> {
           appBar: AppBar(
             backgroundColor: Colors.black,
             toolbarHeight: 0,
+
           ),
           body: const MyHomePage(),
           bottomNavigationBar: const SizedBox(
@@ -685,13 +685,12 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context, constraints) {
           var myAppState = context.watch<MyAppState>();
           return PopScope(
-            canPop: true,
+            canPop: false,
             onPopInvoked: (bool didPop) {
               if (didPop) {
                 setState(() {
                   myAppState.backKeyPressed();
                 });
-                Navigator.pop(context);
                 return;
               }
               attackState = spareAtList.last;
