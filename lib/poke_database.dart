@@ -814,10 +814,7 @@ class PokeDbHelper{
     for(var map in pokeMap){
       pokeInitList.add(Poke(pokeId: map["id"], imagePath: map["image_path"], pokeName: map["poke_name"], char1: map["char1"], char2: map["char2"], char3: map["char3"], hTribe: map["h_tribe"], aTribe: map["a_tribe"], bTribe: map["b_tribe"], cTribe: map["c_tribe"], dTribe: map["d_tribe"], sTribe: map["s_tribe"], type1: map["type1"], type2: map["type2"], skill1: map["skill1"], skill2: map["skill2"], skill3: map["skill3"], skill4: map["skill4"], skill5: map["skill5"], anotherName: map["another_name"], weight: map["weight"].toString()));
     }
-
     return pokeInitList;
   }
-
-
 }
 

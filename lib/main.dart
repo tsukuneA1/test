@@ -90,7 +90,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyApp extends State<MyApp> {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     attackState = widget.atState;
@@ -104,8 +103,14 @@ class _MyApp extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurpleAccent),
           useMaterial3: true,
+          pageTransitionsTheme: const PageTransitionsTheme(
+            builders: <TargetPlatform, PageTransitionsBuilder>{
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),//Androidの遷移もIOS風に指定している
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            }
+          )
         ),
         home: Scaffold(
           appBar: AppBar(
@@ -375,7 +380,7 @@ class MyAppState extends ChangeNotifier{
     }else{
       twoThirds = false;
     }
-    if(skill.name == 'アクロバット' || skill.name == 'からげんき' || skill.name == 'しおみず' || skill.name == 'ベノムショック' || skill.name == 'クロスフレイム' || skill.name == 'クロスサンダー' || skill.name == 'かたきうち'){
+    if(skill.name == 'アクロバット' || skill.name == 'からげんき' || skill.name == 'しおみず' || skill.name == 'ベノムショック' || skill.name == 'クロスフレイム' || skill.name == 'クロスサンダー' || skill.name == 'かたきうち' || skill.name == 'たたりめ'){
       second = true;
     }else{
       second = false;
@@ -487,6 +492,14 @@ class MyAppState extends ChangeNotifier{
   void atSpChChanged(String spChString, bool spCh){
     atSpCh = spCh;
     atSpChString = spChString;
+    if(atSpChString == "ひひいろのこどう" && atSpCh){
+      weatherItemChanged('はれ');
+      notifyListeners();
+    }
+    if(atSpChString == "ハドロンエンジン" && spCh){
+      fieldItemChanged('エレキフィールド');
+      notifyListeners();
+    }
     damageCalc();
     notifyListeners();
   }
@@ -685,7 +698,7 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context, constraints) {
           var myAppState = context.watch<MyAppState>();
           return PopScope(
-            canPop: false,
+            /*canPop: true,
             onPopInvoked: (bool didPop) {
               if (didPop) {
                 setState(() {
@@ -699,7 +712,7 @@ class _MyHomePageState extends State<MyHomePage> {
               dfPokeMap = defenceState.dfPoke;
               spareAtList.removeLast();
               spareDfList.removeLast();
-            },
+            },*/
             child: page
           );
         }
@@ -1304,7 +1317,8 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                         spareAttackState = AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
                         spareAtList.add(spareAttackState);
                         defenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
-                      Navigator.of(context).push(
+                        spareDfList.add(defenceState);
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (context) => const PokeSelect(),
                               settings: RouteSettings(
@@ -1316,6 +1330,7 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                         spareDefenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
                         spareDfList.add(spareDefenceState);
                         attackState =  AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
+                        spareAtList.add(attackState);
                         Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (context) => const DfPokeSelect(),
@@ -1415,17 +1430,17 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                                   RadioListTile(value: typeList[18].type, groupValue: teraRadio, title: Text(typeList[18].type), onChanged: (value){setState(() {teraChange(value); Navigator.pop(context);});}),
                                   RadioListTile(value: typeList[19].type, groupValue: teraRadio, title: Text(typeList[19].type), onChanged: (value){setState(() {teraChange(value); Navigator.pop(context);});}),
                                 ],
-                                ),
                               ),
-                            )
+                            ),
+                          )
                           ),
-                        )
                       )
+                    )
                   ],
                 )
               ],
             ),
-          );
+    );
   }
 }
 
@@ -2484,7 +2499,7 @@ class _ExtraInfoState extends State<ExtraInfo> {
     if(path.skill.name == 'はたきおとす'){
       twoThirdsOffstage = false;
     }
-    if(path.skill.name == 'アクロバット' || path.skill.name == 'からげんき'|| skill.name == 'しおみず' || skill.name == 'ベノムショック' || skill.name == 'クロスフレイム' || skill.name == 'クロスサンダー' || skill.name == 'かたきうち'){
+    if(path.skill.name == 'アクロバット' || path.skill.name == 'からげんき'|| skill.name == 'しおみず' || skill.name == 'ベノムショック' || skill.name == 'クロスフレイム' || skill.name == 'クロスサンダー' || skill.name == 'かたきうち' || skill.name == 'たたりめ'){
       secondOffstage = false;
     }
     var twoThirds = myAppState.twoThirds;

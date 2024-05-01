@@ -180,3 +180,8 @@ class _PokeInputState extends State<PokeInput> {
     );
   }
 }
+
+Future<List<Skill>> customSkillRet(Poke poke) async{
+  var skillList = await DatabaseHelper.customSkillList(poke.skill1, poke.skill2, poke.skill3, poke.skill4, poke.skill5) as List<Skill>;
+  return skillList;
+}
