@@ -2741,13 +2741,15 @@ class _PokeDamageBottomState extends State<PokeDamageBottom>{
               ),
             ),
             secondClip,
+            
           ],
         ),
         Row(
           children: [
             Text('$min~$max'),
             const SizedBox(width: 10,),
-            Text('(${(min/widget.hActual*1000).ceil()/10}%~${(max/widget.hActual*1000).ceil()/10}%)')
+            Text('(${(min/widget.hActual*1000).ceil()/10}%~${(max/widget.hActual*1000).ceil()/10}%)'),
+            Text('HP ${myAppState.hActual}')
           ],
         ),
       ],
