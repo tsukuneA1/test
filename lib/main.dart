@@ -705,7 +705,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   myAppState.backKeyPressed();
                 });
-                return;
               }
               attackState = spareAtList.last;
               defenceState = spareDfList.last;
@@ -1319,14 +1318,12 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                         spareAtList.add(spareAttackState);
                         defenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
                         spareDfList.add(defenceState);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const PokeSelect(),
-                              settings: RouteSettings(
-                                  arguments: DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect)
-                              )
-                          ),
-                        );
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const PokeSelect(),
+                            settings: RouteSettings(
+                                arguments: DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect)
+                            )
+                        ));
                       }else if(atState.aOrD == 'df'){
                         spareDefenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
                         spareDfList.add(spareDefenceState);
