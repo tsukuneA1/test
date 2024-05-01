@@ -698,9 +698,10 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context, constraints) {
           var myAppState = context.watch<MyAppState>();
           return PopScope(
-            /*canPop: true,
+            canPop: true,
             onPopInvoked: (bool didPop) {
               if (didPop) {
+                Navigator.pop(context);
                 setState(() {
                   myAppState.backKeyPressed();
                 });
@@ -712,7 +713,7 @@ class _MyHomePageState extends State<MyHomePage> {
               dfPokeMap = defenceState.dfPoke;
               spareAtList.removeLast();
               spareDfList.removeLast();
-            },*/
+            },
             child: page
           );
         }
@@ -2749,7 +2750,8 @@ class _PokeDamageBottomState extends State<PokeDamageBottom>{
             Text('$min~$max'),
             const SizedBox(width: 10,),
             Text('(${(min/widget.hActual*1000).ceil()/10}%~${(max/widget.hActual*1000).ceil()/10}%)'),
-            Text('HP ${myAppState.hActual}')
+            const SizedBox(width: 10,),
+            Text('HP ${widget.hActual}')
           ],
         ),
       ],
