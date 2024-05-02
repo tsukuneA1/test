@@ -124,14 +124,8 @@ class _PokeSelectPageState extends State<PokeSelectPage> {
                         ),
                         onTap: () async{
                           skillList = await DatabaseHelper.customSkillList(pokeList[position].skill1, pokeList[position].skill2, pokeList[position].skill3, pokeList[position].skill4, pokeList[position].skill5) as List<Skill>;
-                          Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => MyApp(atState: AttackState(poke: pokeList[position], teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: pokeList[position].char1, atSp: false, atEffect: '', skill: skillList[0], teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false), dfState: dfState, skills: skillList),
-                                settings: RouteSettings(
-                                    arguments: dfState
-                                ),
-                              )
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp(atState: AttackState(poke: pokeList[position], teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: pokeList[position].char1, atSp: false, atEffect: '', skill: skillList[0], teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false), dfState: dfState, skills: skillList),
+                          ));
                         },
                       )
                     ],

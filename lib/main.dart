@@ -701,17 +701,17 @@ class _MyHomePageState extends State<MyHomePage> {
             canPop: true,
             onPopInvoked: (bool didPop) {
               if (didPop) {
-                Navigator.pop(context);
+                attackState = spareAtList.last;
+                defenceState = spareDfList.last;
+                pokeMap = attackState.poke;
+                dfPokeMap = defenceState.dfPoke;
+                spareAtList.removeLast();
+                spareDfList.removeLast();
                 setState(() {
                   myAppState.backKeyPressed();
                 });
+                Navigator.pop(context);
               }
-              attackState = spareAtList.last;
-              defenceState = spareDfList.last;
-              pokeMap = attackState.poke;
-              dfPokeMap = defenceState.dfPoke;
-              spareAtList.removeLast();
-              spareDfList.removeLast();
             },
             child: page
           );
