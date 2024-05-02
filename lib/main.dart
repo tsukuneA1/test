@@ -700,17 +700,18 @@ class _MyHomePageState extends State<MyHomePage> {
           return PopScope(
             canPop: true,
             onPopInvoked: (bool didPop) {
-              if (didPop) {
+              if (didPop){
                 attackState = spareAtList.last;
                 defenceState = spareDfList.last;
                 pokeMap = attackState.poke;
                 dfPokeMap = defenceState.dfPoke;
                 spareAtList.removeLast();
                 spareDfList.removeLast();
-                setState(() {
-                  myAppState.backKeyPressed();
-                });
-                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => MyApp(atState: spareAtList.last, dfState: spareDfList.last, skills: listUpdate(spareAtList.last.poke)),
+                  ),
+                );
               }
             },
             child: page
@@ -3778,8 +3779,21 @@ class MinMaxSum{
   int max;
 }
 
-void listUpdate(String skill1, String skill2,String skill3,String skill4,String skill5) async{
-  listMap = await DatabaseHelper.customSkillList(skill1, skill2, skill3, skill4, skill5) as List<Skill>;
+List<Skill> listUpdate(Poke poke){
+  List<String> initialList = [poke.skill1, poke.skill2, poke.skill3, poke.skill4, poke.skill5];
+  List<Skill> retSkill = [];
+  for(int i = 0; i<skillList.length; i++){
+    if(initialList.contains(skillList[i].name)){
+      retSkill.add(skillList[i]);
+    }
+  }
+  for(int i = 0; i < skillList.length; i++){
+    if(!initialList.contains(skillList[i].name)){
+      retSkill.add(skillList[i]);
+    }
+  }
+  return retSkill;
+  
 }
 
 Future<List<Skill>> retUpdate(String skill1, String skill2,String skill3,String skill4,String skill5) async{
