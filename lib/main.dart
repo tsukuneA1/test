@@ -3316,6 +3316,11 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
   Widget build(BuildContext context){
     var myAppState = context.watch<MyAppState>();
     skillList = listUpdate(myAppState.atPoke);
+    if(myAppState.firstFlag){
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        myAppState.skillChanged(skillList.first);
+      });
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
