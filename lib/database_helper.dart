@@ -502,7 +502,7 @@ class DatabaseHelper{
 
     for(var map in listMap){
       if(! initialList.contains(map["skill_name"])){
-        skillList.add(Skill(name: map["skill_name"], power: map["skill_power"], type: map["skill_type"], anotherName: map["skill_another"], classification: map["skill_classification"]));
+        skillList.add(Skill(id: map["id"], name: map["skill_name"], power: map["skill_power"], type: map["skill_type"], anotherName: map["skill_another"], classification: map["skill_classification"]));
       }else{}
     }
     return skillList;
@@ -512,7 +512,7 @@ class DatabaseHelper{
 void skillAdd(List<Map> listMap, String skill){
   for(var map in listMap){
     if(skill == map["skill_name"]){
-      skillList.add(Skill(name: map["skill_name"], power: map["skill_power"], type: map["skill_type"], anotherName: map["skill_another"], classification: map["skill_classification"]));
+      skillList.add(Skill(id: map["id"], name: map["skill_name"], power: map["skill_power"], type: map["skill_type"], anotherName: map["skill_another"], classification: map["skill_classification"]));
     }
   }
 }

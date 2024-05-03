@@ -8,6 +8,7 @@ import 'class_root.dart';
 
 List<Poke> pokeInfo = [];
 Poke another = pokeInfo[0];
+DefenceState sendDefence = defenceState;
 
 class PokeListState extends ChangeNotifier{
   var pokeInfo = pokeInitList;
@@ -27,8 +28,9 @@ class PokeListState extends ChangeNotifier{
 }
 
 class PokeSelect extends StatefulWidget{
+  final DefenceState dfState;
   const PokeSelect({
-    super.key,
+    super.key, required this.dfState
   });
 
   @override
@@ -41,6 +43,7 @@ class _PokeSelectState extends State<PokeSelect> {
 
   @override
   Widget build(BuildContext context) {
+    sendDefence = widget.dfState;
     return ChangeNotifierProvider(
       create: (context) => PokeListState(),
       child: MaterialApp(
@@ -89,7 +92,6 @@ class PokeSelectPage extends StatefulWidget{
 class _PokeSelectPageState extends State<PokeSelectPage> {
   @override
   Widget build(BuildContext context){
-    final dfState = defenceState;
     var pokeInputState = context.watch<PokeListState>();
     var pokeList = pokeInputState.retInfo;
     return Scaffold(
@@ -124,7 +126,8 @@ class _PokeSelectPageState extends State<PokeSelectPage> {
                         ),
                         onTap: () async{
                           skillList = await DatabaseHelper.customSkillList(pokeList[position].skill1, pokeList[position].skill2, pokeList[position].skill3, pokeList[position].skill4, pokeList[position].skill5) as List<Skill>;
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp(atState: AttackState(poke: pokeList[position], teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: pokeList[position].char1, atSp: false, atEffect: '', skill: skillList[0], teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false), dfState: dfState, skills: skillList),
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => MyApp(atState: AttackState(poke: pokeList[position], teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: pokeList[position].char1, atSp: false, atEffect: '', skill: skillList[0], teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false), dfState: sendDefence, skills: skillList),
                           ));
                         },
                       )

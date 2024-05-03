@@ -7,6 +7,7 @@ import 'class_root.dart';
 
 List<Poke> pokeInfo = [];
 Poke another = pokeInfo[0];
+AttackState sendAttack = attackState;
 
 class DfPokeListState extends ChangeNotifier{
   var pokeInfo = pokeInitList;
@@ -26,8 +27,9 @@ class DfPokeListState extends ChangeNotifier{
 }
 
 class DfPokeSelect extends StatefulWidget{
+  final AttackState atState;
   const DfPokeSelect({
-    super.key,
+    super.key, required this.atState
   });
 
   @override
@@ -40,6 +42,7 @@ class _DfPokeSelectState extends State<DfPokeSelect> {
 
   @override
   Widget build(BuildContext context) {
+    sendAttack = widget.atState;
     return ChangeNotifierProvider(
       create: (context) => DfPokeListState(),
       child: MaterialApp(
@@ -87,7 +90,6 @@ class DfPokeSelectPage extends StatefulWidget{
 class _DfPokeSelectPageState extends State<DfPokeSelectPage> {
   @override
   Widget build(BuildContext context){
-    final atState = attackState;
     var pokeInputState = context.watch<DfPokeListState>();
     var pokeList = pokeInputState.retInfo;
     return Scaffold(
@@ -126,12 +128,12 @@ class _DfPokeSelectPageState extends State<DfPokeSelectPage> {
                           damageWidgetList = [];
                           reCalcList = [];
                           minMaxSumList = [];
-                          skillList = await DatabaseHelper.customSkillList(atState.poke.skill1, atState.poke.skill2, atState.poke.skill3, atState.poke.skill4, atState.poke.skill5) as List<Skill>;
+                          skillList = await DatabaseHelper.customSkillList(sendAttack.poke.skill1, sendAttack.poke.skill2, sendAttack.poke.skill3, sendAttack.poke.skill4, sendAttack.poke.skill5) as List<Skill>;
                           Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => MyApp(atState: atState, dfState: DefenceState(dfPoke: pokeList[position], hSliderVal: 0, hEffort: 0, bSliderVal: 0, bEffort: 0, bNatPos: 1, dSliderVal: 0, dEffort: 0, dNatPos: 1, bRankPos: 6, dRankPos: 6, dfSpCh: pokeList[position].char1, dfSp: false, dfTeraType: 'null', dfTeraImage: Image.asset('images/not_selected.png'), dfEffect: ''), skills: skillList),
+                                builder: (context) => MyApp(atState: sendAttack, dfState: DefenceState(dfPoke: pokeList[position], hSliderVal: 0, hEffort: 0, bSliderVal: 0, bEffort: 0, bNatPos: 1, dSliderVal: 0, dEffort: 0, dNatPos: 1, bRankPos: 6, dRankPos: 6, dfSpCh: pokeList[position].char1, dfSp: false, dfTeraType: 'null', dfTeraImage: Image.asset('images/not_selected.png'), dfEffect: ''), skills: skillList),
                                 settings: RouteSettings(
-                                    arguments: atState
+                                    arguments: sendAttack
                                 ),
                               )
                           );

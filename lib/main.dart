@@ -1,10 +1,5 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'database_helper.dart';
@@ -31,18 +26,12 @@ late String path;
 late Database database;
 List<Skill> listMap = skillList;
 List<Poke> pokeInfo = [];
-Poke pokeMap = pokeInfo[0];
-Poke dfPokeMap = pokeInfo[1];
 List<SavedDamage> savedDamageList = [];
 List<SavedDamageWidget> damageWidgetList = [];
 List<ReCalc> reCalcList = [];
 List<MinMaxSum> minMaxSumList = [];
 AttackState attackState = AttackState(poke: pokeInfo[0], teraImage: Image.asset('images/not_selected.png'), atSlider: 0, atEffort: 0, atNatPos: 1, atRankPos: 6, atSpCh: pokeInfo[0].char1, atSp: false, atEffect: '', skill: skillList[0], teraIcon: Image.asset('images/bef_teras.png'), teraType: 'null', stellaFlag: false, stellaEffective: false);
 DefenceState defenceState = DefenceState(dfPoke: pokeInfo[1], hSliderVal: 0, hEffort: 0, bSliderVal: 0, bEffort: 0, bNatPos: 1, dSliderVal: 0, dEffort: 0, dNatPos: 1, bRankPos: 6, dRankPos: 6, dfSpCh: pokeInfo[1].char1, dfSp: false, dfTeraType: 'null', dfTeraImage: Image.asset('images/not_selected.png'), dfEffect: '');
-AttackState spareAttackState = attackState;
-DefenceState spareDefenceState = defenceState;
-List<AttackState> spareAtList = [];
-List<DefenceState> spareDfList = [];
 
 final List<Type> typeList = [
   Type(type: 'ノーマル', typeImage: Image.asset('images/nomaru_tag.png'), typeIcon: Image.asset('images/noma_tera.png')),
@@ -93,9 +82,7 @@ class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     attackState = widget.atState;
-    pokeMap = attackState.poke;
     defenceState = widget.dfState;
-    dfPokeMap = widget.dfState.dfPoke;
     listMap = widget.skills;
 
     return ChangeNotifierProvider(
@@ -150,18 +137,18 @@ class MyAppState extends ChangeNotifier{
   var dfSpCh = defenceState.dfSp;
   var dfEffect = defenceState.dfEffect;
   var dfSpChString = defenceState.dfSpCh;
-  var hTribe = dfPokeMap.hTribe;
+  var hTribe = defenceState.dfPoke.hTribe;
   var aTribe = attackState.poke.aTribe;
-  var bTribe = dfPokeMap.bTribe;
+  var bTribe = defenceState.dfPoke.bTribe;
   var cTribe = attackState.poke.cTribe;
-  var dTribe = dfPokeMap.dTribe;
+  var dTribe = defenceState.dfPoke.dTribe;
   var skillList = listMap;
   var selectedSkill = attackState.skill;
   var physOrSpe = listMap.first.classification;
   var aActual = ((attackState.poke.aTribe*2+31)*0.5+5).toInt();
-  var hActual = ((dfPokeMap.hTribe*2+31+defenceState.hEffort/4)*0.5+60).toInt();
-  var bActual = actualCalc(dfPokeMap.bTribe, defenceState.bEffort, defenceState.bNatPos);
-  var dActual = actualCalc(dfPokeMap.dTribe, defenceState.dEffort, defenceState.dNatPos);
+  var hActual = ((defenceState.dfPoke.hTribe*2+31+defenceState.hEffort/4)*0.5+60).toInt();
+  var bActual = actualCalc(defenceState.dfPoke.bTribe, defenceState.bEffort, defenceState.bNatPos);
+  var dActual = actualCalc(defenceState.dfPoke.dTribe, defenceState.dEffort, defenceState.dNatPos);
   var teraIcon = attackState.teraIcon;
   var teraImage = attackState.teraImage;
   var atTeraType = attackState.teraType;
@@ -200,8 +187,8 @@ class MyAppState extends ChangeNotifier{
   var stellaBlastFlag = true;
   var teraPhysOrSpe = '特殊';
   var stellaEffectiveFlag = false;
-  var atPoke = pokeMap;
-  var dfPoke = dfPokeMap;
+  var atPoke = attackState.poke;
+  var dfPoke = defenceState.dfPoke;
 
   void atActualCalc(String classification,double changeSliderVal, int changeNut){
     atSliderVal = changeSliderVal;
@@ -293,7 +280,7 @@ class MyAppState extends ChangeNotifier{
     hActual = ((hTribe*2+31+hEffort/4)*0.5+60).toInt();
     bActual = actualCalc(bTribe, bEffort, bNatPos);
     dActual = actualCalc(dTribe, dEffort, dNatPos);
-    DfState(dfPokeMap, hSlider, bSlider, dSlider, bNat, dNat);
+    DfState(dfPoke, hSlider, bSlider, dSlider, bNat, dNat);
     notifyListeners();
     minMaxDecide(reCalcList, hActual, bActual, dActual);
     damageCalc();
@@ -322,15 +309,15 @@ class MyAppState extends ChangeNotifier{
     selectedSkill = skill;
     if(skill.name == 'ツタこんぼう'){
       if(atPoke.pokeName == 'オーガポン(竈)'){
-        selectedSkill = Skill(name: 'ツタこんぼう', power: 100, type: 'ほのお', anotherName: 'ツタこんぼう', classification: '物理');
+        selectedSkill = Skill(id: 1000, name: 'ツタこんぼう', power: 100, type: 'ほのお', anotherName: 'ツタこんぼう', classification: '物理');
         atEffect = 'お面';
       }
       if(atPoke.pokeName == 'オーガポン(井戸)'){
-        selectedSkill = Skill(name: 'ツタこんぼう', power: 100, type: 'みず', anotherName: 'ツタこんぼう', classification: '物理');
+        selectedSkill = Skill(id: 1000, name: 'ツタこんぼう', power: 100, type: 'みず', anotherName: 'ツタこんぼう', classification: '物理');
         atEffect = 'お面';
       }
       if(atPoke.pokeName == 'オーガポン(礎)'){
-        selectedSkill = Skill(name: 'ツタこんぼう', power: 100, type: 'いわ', anotherName: 'ツタこんぼう', classification: '物理');
+        selectedSkill = Skill(id: 1000, name: 'ツタこんぼう', power: 100, type: 'いわ', anotherName: 'ツタこんぼう', classification: '物理');
         atEffect = 'お面';
       }
     }
@@ -340,13 +327,13 @@ class MyAppState extends ChangeNotifier{
         teraBlastFlag = false;
         stellaBlastFlag = true;
         atActualCalc(classification, atSliderVal, atNatPos);
-        selectedSkill = Skill(name: 'テラバースト', power: 80, type: atTeraType, anotherName: 'てらばーすと', classification: classification);
+        selectedSkill = Skill(id: 1000, name: 'テラバースト', power: 80, type: atTeraType, anotherName: 'てらばーすと', classification: classification);
       }else if(atTeraType == 'ステラ'){
         var classification = teraPhysOrSpe;
         stellaBlastFlag = false;
         teraBlastFlag = true;
         atActualCalc(classification, atSliderVal, atNatPos);
-        selectedSkill = Skill(name: 'テラバースト', power: 100, type: 'ステラ', anotherName: 'てらばーすと', classification: classification);
+        selectedSkill = Skill(id: 1000, name: 'テラバースト', power: 100, type: 'ステラ', anotherName: 'てらばーすと', classification: classification);
       }
     }else if(skill.name == "テラクラスター"){
       if(atPoke.pokeName == "テラパゴス(ステラ)"){
@@ -354,7 +341,7 @@ class MyAppState extends ChangeNotifier{
         stellaBlastFlag = false;
         teraBlastFlag = true;
         atActualCalc(teraPhysOrSpe, atSliderVal, atNatPos);
-        selectedSkill = Skill(name: 'テラクラスター', power: 120, type: 'ステラ', anotherName: 'てらくらすたー', classification: '特殊');
+        selectedSkill = Skill(id: 1000, name: 'テラクラスター', power: 120, type: 'ステラ', anotherName: 'てらくらすたー', classification: '特殊');
       }
     }else{
       teraBlastFlag = true;
@@ -400,14 +387,14 @@ class MyAppState extends ChangeNotifier{
     if(type == 'null'){
       teraIcon = Image.asset('images/bef_teras.png');
       teraImage = typeList.where((Type option){
-        return option.type == pokeMap.type1;
+        return option.type == atPoke.type1;
       }).first.typeImage;
       teraImage = typeList[19].typeImage;
       atTeraType = 'null';
       stellaFlag = false;
       stellaImagePath = 'images/stella.png';
       if(selectedSkill.name == 'テラバースト'){
-        skillChanged(Skill(name: 'テラバースト', power: 80, type: 'ノーマル', anotherName: 'てらばーすと', classification: '特殊'));
+        skillChanged(Skill(id: 1000, name: 'テラバースト', power: 80, type: 'ノーマル', anotherName: 'てらばーすと', classification: '特殊'));
         teraBlastFlag = true;
         stellaBlastFlag = true;
         stellaEffectiveFlag = false;
@@ -425,11 +412,11 @@ class MyAppState extends ChangeNotifier{
       }
       if(selectedSkill.name == 'テラバースト'){
         teraPhysOrSpe = classification;
-        selectedSkill = Skill(name: 'テラバースト', power: 100, type: 'ステラ', anotherName: 'てらばーすと', classification: classification);
+        selectedSkill = Skill(id: 1000, name: 'テラバースト', power: 100, type: 'ステラ', anotherName: 'てらばーすと', classification: classification);
         skillChanged(selectedSkill);
         stellaBlastFlag = false;
       }else if(selectedSkill.name == 'テラクラスター'){
-        selectedSkill = Skill(name: 'テラクラスター', power: 120, type: 'ステラ', anotherName: 'てらくらすたー', classification: '特殊');
+        selectedSkill = Skill(id: 1000, name: 'テラクラスター', power: 120, type: 'ステラ', anotherName: 'てらくらすたー', classification: '特殊');
         skillChanged(selectedSkill);
         stellaBlastFlag = false;
       }
@@ -454,7 +441,7 @@ class MyAppState extends ChangeNotifier{
       }
       if(selectedSkill.name == 'テラバースト'){
         teraPhysOrSpe = classification;
-        selectedSkill = Skill(name: 'テラバースト', power: 80, type: atTeraType, anotherName: 'てらばーすと', classification: classification);
+        selectedSkill = Skill(id: 1000, name: 'テラバースト', power: 80, type: atTeraType, anotherName: 'てらばーすと', classification: classification);
         skillChanged(selectedSkill);
         teraBlastFlag = false;
       }
@@ -465,7 +452,7 @@ class MyAppState extends ChangeNotifier{
 
   void classificationChanged(Skill skill, String classification){
     teraPhysOrSpe = classification;
-    skillChanged(Skill(name: skill.name, power: skill.power, type: skill.type, anotherName: skill.anotherName, classification: classification));
+    skillChanged(Skill(id: 1000, name: skill.name, power: skill.power, type: skill.type, anotherName: skill.anotherName, classification: classification));
     atActualCalc(classification, atSliderVal, atNatPos);
     physOrSpe = classification;
     notifyListeners();
@@ -475,7 +462,7 @@ class MyAppState extends ChangeNotifier{
   void dfTeraStateChanged(String type){
     if(type == 'null'){
       dfTeraImage = typeList.where((Type option){
-        return option.type == dfPokeMap.type1;
+        return option.type == dfPoke.type1;
       }).first.typeImage;
       dfTeraImage = typeList[19].typeImage;
       dfTeraType = 'null';
@@ -589,10 +576,13 @@ class MyAppState extends ChangeNotifier{
     if(second){finalSkillPower = (finalSkillPower*2).truncate();}
     double typeMag1 = typeMagnification(selectedSkill, dfPoke.type1, atSp);
     double typeMag2 = typeMagnification(selectedSkill, 'null', atSp);
-    if(dfPokeMap.type2 != 'null'){
+    if(dfPoke.type2 != 'null'){
       typeMag2 = typeMagnification(selectedSkill, dfPoke.type2, atSp);
     }
     double typeMag = typeMag1*typeMag2;
+    if(dfSpChString == 'テラスシェル' && dfSpCh){
+      typeMag = 0.5;
+    }
     if(dfTeraType != 'null' && dfTeraType != 'ステラ'){
       typeMag = typeMagnification(selectedSkill, dfTeraType, atSp);
     }else if(atTeraType == 'ステラ' && stellaEffectiveFlag){
@@ -671,15 +661,6 @@ class MyAppState extends ChangeNotifier{
     notifyListeners();
     damageCalc();
   }
-
-  void backKeyPressed(){
-    attackState = spareAtList.last;
-    defenceState = spareDfList.last;
-    pokeMap = attackState.poke;
-    dfPokeMap = defenceState.dfPoke;
-    atPoke = attackState.poke;
-    dfPoke = defenceState.dfPoke;
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -696,24 +677,8 @@ class _MyHomePageState extends State<MyHomePage> {
     page = const DamageCalcPage();
     return LayoutBuilder(
         builder: (context, constraints) {
-          var myAppState = context.watch<MyAppState>();
           return PopScope(
-            canPop: true,
-            onPopInvoked: (bool didPop) {
-              if (didPop){
-                attackState = spareAtList.last;
-                defenceState = spareDfList.last;
-                pokeMap = attackState.poke;
-                dfPokeMap = defenceState.dfPoke;
-                spareAtList.removeLast();
-                spareDfList.removeLast();
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => MyApp(atState: spareAtList.last, dfState: spareDfList.last, skills: listUpdate(spareAtList.last.poke)),
-                  ),
-                );
-              }
-            },
+            canPop: false,
             child: page
           );
         }
@@ -731,22 +696,22 @@ class DamageCalcPage extends StatefulWidget{
 class _DamageCalcPageState extends State<DamageCalcPage> {
   final pokeList = pokeInfo;
   final double _currentSliderVal = 0;
-  int aTribe = pokeMap.aTribe;
-  int cTribe = pokeMap.cTribe;
-  int atState = pokeMap.aTribe;
+
   int effortVal = 0;
   String natVal = natList[1];
   String rankVal = rankList[6];
-  List<String> spChList = <String>[pokeMap.char1, pokeMap.char2, pokeMap.char3];
+
   String effectVal = atEffectList[0];
   bool spChChecked = false;
-  static const IconData change_circle_outlined = IconData(0xef3f, fontFamily: 'MaterialIcons');
+  static const IconData changeCircle= IconData(0xef3f, fontFamily: 'MaterialIcons');
 
   var skillList = listMap;
 
   @override
   Widget build(BuildContext context){
     var myState = context.watch<MyAppState>();
+    int cTribe = myState.atPoke.cTribe;
+    int atState = myState.atPoke.aTribe;
     skillList = myState.skillList;
     var classification = myState.physOrSpe;
     if(classification == "特殊"){
@@ -782,41 +747,55 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
       myState.damageCalc();
     });
 
-    return Column(
-      children: [
-        Flexible(
-          child: CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  Container(
-                    color: const Color(0xfff5f5f5),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          const AttackerWidget(),
-                          const SizedBox(height: 5,),
-                          buildIconButton(myState, context),
-                          const SizedBox(height: 5,),
-                          const DefenceWidget(),
-                          const SizedBox(height: 20,),
-                          const EnviContainer(),
-                          DamageListWidget(damageList: myState.widgetList)
-                        ],
-                      ),
+    return LayoutBuilder(
+        builder: (context, constraints) {
+          return PopScope(
+            canPop: false,
+              onPopInvoked: (didPop) async{
+                if (didPop) {
+                  return;
+                }
+              },
+              child: Column(
+                children: [
+                  Flexible(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: SliverChildListDelegate([
+                            Container(
+                              color: const Color(0xfff5f5f5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: [
+                                    const AttackerWidget(),
+                                    const SizedBox(height: 5,),
+                                    buildIconButton(myState, context),
+                                    const SizedBox(height: 5,),
+                                    const DefenceWidget(),
+                                    const SizedBox(height: 20,),
+                                    const EnviContainer(),
+                                    DamageListWidget(damageList: myState.widgetList)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ],
                     ),
                   ),
-                ]),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+          );
+        }
     );
   }
 
   IconButton buildIconButton(MyAppState myState, BuildContext context) {
+    var pokeMap = myState.atPoke;
+    var dfPokeMap = myState.dfPoke;
     return IconButton(
       icon: Container(
         decoration: const BoxDecoration(
@@ -824,7 +803,7 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
           color: Colors.white,
         ),
         child: const Icon(
-          change_circle_outlined,
+          changeCircle,
           size: 50,
         ),
       ),
@@ -837,8 +816,6 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
         minMaxSumList = [];
         reCalcList = [];
         skillList = await DatabaseHelper.customSkillList(dfPokeMap.skill1, dfPokeMap.skill2, dfPokeMap.skill3, dfPokeMap.skill4, dfPokeMap.skill5) as List<Skill>;
-        spareAttackState = AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
-        spareDefenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
         setState(() {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -864,8 +841,6 @@ class AttackerWidget extends StatefulWidget{
 class _AttackerWidgetState extends State<AttackerWidget>  {
   final pokeList = pokeInfo;
   final double _currentSliderVal = 0;
-  int bTribe = pokeMap.bTribe;
-  int atState = pokeMap.aTribe;
   int effortVal = 0;
   String natVal = natList[1];
   String rankVal = rankList[6];
@@ -876,11 +851,10 @@ class _AttackerWidgetState extends State<AttackerWidget>  {
   bool offStage = true;
 
   var skillList = listMap;
-  static String _displaySkillStringForOption(Skill option) => option.name;
-  final TextEditingController _textSkillEditingController = TextEditingController();
   @override
   Widget build(BuildContext context){
     var myState = context.watch<MyAppState>();
+    int atState = myState.atPoke.aTribe;
     var atWidgetState = AtState(myState.atPoke, myState.teraImage, myState.atSliderVal, myState.atNatPos, myState.atRankPos, myState.selectedSkill, myState.teraIcon);
     skillList = myState.skillList;
     var classification = myState.physOrSpe;
@@ -1295,14 +1269,14 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                     child: Image.asset(atState.poke.imagePath)
                 )
             ),
-            buildContainer(context, atState, myState, pokeTribe, imageList, teraImage, teraChange)
+            buildContainer(context, atState, myState, pokeTribe, imageList, teraImage, teraChange, AttackState(poke: myState.atPoke, teraImage: teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag), DefenceState(dfPoke: myState.dfPoke, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect))
           ],
         ),
       ],
     );
   }
 
-  Container buildContainer(BuildContext context, DetailClassPath atState, MyAppState myState, String pokeTribe, List<Image> imageList, Image teraImage, void teraChange(String? value)) {
+  Container buildContainer(BuildContext context, DetailClassPath atState, MyAppState myState, String pokeTribe, List<Image> imageList, Image teraImage, void teraChange(String? value), AttackState atStates, DefenceState dfState) {
     return Container(
             margin: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
@@ -1315,26 +1289,18 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                   child: InkWell(
                     onTap: (){
                       if(atState.aOrD == 'at'){
-                        spareAttackState = AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
-                        spareAtList.add(spareAttackState);
-                        defenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
-                        spareDfList.add(defenceState);
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const PokeSelect(),
+                            builder: (context) => PokeSelect(dfState: dfState),
                             settings: RouteSettings(
-                                arguments: DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect)
+                                arguments: dfState
                             )
                         ));
                       }else if(atState.aOrD == 'df'){
-                        spareDefenceState = DefenceState(dfPoke: dfPokeMap, hSliderVal: myState.hSliderVal, hEffort: myState.hEffort, bSliderVal: myState.bSliderVal, bEffort: myState.bEffort, bNatPos: myState.bNatPos, dSliderVal: myState.dSliderVal, dEffort: myState.dEffort, dNatPos: myState.dNatPos, bRankPos: myState.bRankPos, dRankPos: myState.dRankPos, dfSpCh: myState.dfSpChString, dfSp: myState.dfSpCh, dfTeraType: myState.dfTeraType, dfTeraImage: myState.dfTeraImage, dfEffect: myState.dfEffect);
-                        spareDfList.add(spareDefenceState);
-                        attackState =  AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag);
-                        spareAtList.add(attackState);
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => const DfPokeSelect(),
+                              builder: (context) => DfPokeSelect(atState: atStates,),
                               settings: RouteSettings(
-                                  arguments: AttackState(poke: pokeMap, teraImage: myState.teraImage, atSlider: myState.atSliderVal, atEffort: myState.atEffort, atNatPos: myState.atNatPos, atRankPos: myState.atRankPos, atSpCh: myState.atSpChString, atSp: myState.atSpCh, atEffect: myState.atEffect, skill: myState.selectedSkill, teraIcon: myState.teraIcon, teraType: myState.atTeraType, stellaFlag: myState.stellaFlag, stellaEffective: myState.stellaEffectiveFlag)
+                                  arguments: atStates
                               )
                           ),
                         );
@@ -2106,7 +2072,6 @@ class _EnviContainerState extends State<EnviContainer> {
                       ConstDamageWidget(path: ConstDamageClassPath(myAppState.sixteen, '1/16', sixteenList, myAppState.ten, '1/10', tenList)),
                       ConstDamageWidget(path: ConstDamageClassPath(myAppState.eight, '1/8', eightList, myAppState.six, '1/6', sixList)),
                       ConstDamageWidget(path: ConstDamageClassPath(myAppState.four, '1/4', fourList, myAppState.two, '1/2', twoList)),
-
                     ],
                   ),
                 ),
@@ -2326,9 +2291,9 @@ class _DamageContainerState extends State<DamageContainer> {
                   ),
                   child: SizedBox(
                     width: progressWidth,
-                    child: LinearProgressIndicator(
+                    child: const LinearProgressIndicator(
                       backgroundColor: Colors.grey,
-                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
                       minHeight: 8,
                       value: 1,
                     ),
@@ -2355,7 +2320,7 @@ class _DamageContainerState extends State<DamageContainer> {
               children: [
                 Text(myAppState.damageText.toString()),
                 const SizedBox(width: 10,),
-                Text('(${(myAppState.minDamage/myAppState.hActual*1000).ceil()/10}%~${(myAppState.maxDamage/myAppState.hActual*1000).ceil()/10}%)', style: TextStyle(fontSize: 13),),
+                Text('(${(myAppState.minDamage/myAppState.hActual*1000).ceil()/10}%~${(myAppState.maxDamage/myAppState.hActual*1000).ceil()/10}%)', style: const TextStyle(fontSize: 13),),
                 const Expanded(child: SizedBox()),
                 Container(
                   alignment: Alignment.topRight,
@@ -2501,7 +2466,6 @@ class _ExtraInfoState extends State<ExtraInfo> {
     if(path.skill.name == 'アクロバット' || path.skill.name == 'からげんき'|| skill.name == 'しおみず' || skill.name == 'ベノムショック' || skill.name == 'クロスフレイム' || skill.name == 'クロスサンダー' || skill.name == 'かたきうち' || skill.name == 'たたりめ'){
       secondOffstage = false;
     }
-    var twoThirds = myAppState.twoThirds;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp){
       myAppState.damageCalc();
     });
@@ -2559,7 +2523,6 @@ class PokeDetailTop extends StatefulWidget{
 class _PokeDetailTopState extends State<PokeDetailTop> {
   @override
   Widget build(BuildContext context){
-    var myAppState = context.watch<MyAppState>();
     var pokeTribe = '${widget.poke.hTribe}-${widget.poke.aTribe}-${widget.poke.bTribe}-${widget.poke.cTribe}-${widget.poke.dTribe}-${widget.poke.sTribe}';
     var imageList = <Image>[typeList.where((Type option) {return option.type == widget.poke.type1;}).first.typeImage];
     if(widget.poke.type2 != ''){
@@ -2622,7 +2585,7 @@ class _PokeDetailTopState extends State<PokeDetailTop> {
                           myAppState.damageDelete(widget.id);
                         });
                       },
-                      icon: Icon(Icons.cancel)),
+                      icon: const Icon(Icons.cancel)),
                 ],
               )
             ],
@@ -2731,9 +2694,9 @@ class _PokeDamageBottomState extends State<PokeDamageBottom>{
               ),
               child: SizedBox(
                 width: progressWidth,
-                child: LinearProgressIndicator(
+                child: const LinearProgressIndicator(
                   backgroundColor: Colors.grey,
-                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
                   minHeight: 8,
                   value: 1,
                 ),
@@ -3352,6 +3315,7 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
   @override
   Widget build(BuildContext context){
     var myAppState = context.watch<MyAppState>();
+    skillList = listUpdate(myAppState.atPoke);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -3755,12 +3719,14 @@ class _TopTabContainerState extends State<TopTabContainer> {
 
 class Skill {
   Skill({
+    required this.id,
     required this.name,
     required this.power,
     required this.type,
     required this.anotherName,
     required this.classification
   });
+  int id;
   String name;
   String anotherName;
   int power;
@@ -3782,16 +3748,28 @@ class MinMaxSum{
 List<Skill> listUpdate(Poke poke){
   List<String> initialList = [poke.skill1, poke.skill2, poke.skill3, poke.skill4, poke.skill5];
   List<Skill> retSkill = [];
-  for(int i = 0; i<skillList.length; i++){
-    if(initialList.contains(skillList[i].name)){
-      retSkill.add(skillList[i]);
+  List<Skill> anotherList = [];
+
+  void skillAdd(String skill){
+    for(int i = 0; i<skillList.length; i++){
+      if(skill==skillList[i].name){
+        retSkill.add(skillList[i]);
+      }
     }
   }
+  skillAdd(poke.skill1);
+  skillAdd(poke.skill2);
+  skillAdd(poke.skill3);
+  skillAdd(poke.skill4);
+  skillAdd(poke.skill5);
+
   for(int i = 0; i < skillList.length; i++){
     if(!initialList.contains(skillList[i].name)){
-      retSkill.add(skillList[i]);
+      anotherList.add(skillList[i]);
     }
   }
+  anotherList.sort((a, b) => (a.id).compareTo(b.id));
+  retSkill += anotherList;
   return retSkill;
   
 }
@@ -3809,6 +3787,8 @@ void minMaxDecide(List<ReCalc> list, int hActual, int bActual, int dActual){
 }
 
 List<int> damageCalc(AttackStatePath atPath, DefenceStatePath dfPath, CircumstanceStatePath envPath, int hActual, int bActual, int dActual){
+  var pokeMap = atPath.poke;
+  var dfPokeMap = dfPath.poke;
   int atActual = atPath.atActual;
   int dfActual = bActual;
   int dfRankPos = dfPath.dfBRank;
@@ -3843,11 +3823,15 @@ List<int> damageCalc(AttackStatePath atPath, DefenceStatePath dfPath, Circumstan
     typeMag2 = typeMagnification(selectedSkill, dfPokeMap.type2, atSp);
   }
   double typeMag = typeMag1*typeMag2;
+  if(dfSp == 'テラスシェル' && dfPath.dfSp){
+    typeMag = 0.5;
+  }
   if(dfPath.dfTeraType != 'null' && dfPath.dfTeraType != 'ステラ'){
     typeMag = typeMagnification(selectedSkill, dfPath.dfTeraType, atSp);
   }else if(atPath.atTera == 'ステラ' && atPath.stellaEffective){
     typeMag = 2.0;
   }
+
   double finalDamageMag = finalDamageMagnification(pokeMap, dfPokeMap, selectedSkill, envPath.reflect, envPath.lightWall, atSp, atPath.atEffect, dfSp, dfPath.dfEffect, typeMag);
 
   List<int> minMax = damageCalculate(pokeMap, dfPokeMap, atAct, dfAct, typeMag, atMagnification(selectedSkill.type, atPath.poke.type1, atPath.poke.type2, atPath.atTera), '', '', selectedSkill, finalSkillPower, atPath.atRankPos, atPath.critical, envPath.weather);
