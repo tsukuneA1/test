@@ -321,6 +321,28 @@ class MyAppState extends ChangeNotifier{
         atEffect = 'お面';
       }
     }
+
+    if(skill.name == "けたぐり" || skill.name == "くさむすび"){
+      int power = 1;
+      if(dfPoke.weight >= 200){power = 120;}
+      else if(dfPoke.weight >= 100 && dfPoke.weight < 200){power = 100;}
+      else if(dfPoke.weight >= 50 && dfPoke.weight < 100){power = 80;}
+      else if(dfPoke.weight >= 25 && dfPoke.weight < 50){power = 60;}
+      else if(dfPoke.weight >= 10 && dfPoke.weight < 25){power = 40;}
+      else{power = 20;}
+      selectedSkill = Skill(id: skill.id, name: skill.name, power: power, type: skill.type, anotherName: skill.anotherName, classification: skill.classification);
+    }
+
+    if(skill.name == "ヘビーボンバー" || skill.name == "ヒートスタンプ"){
+      int power = 1;
+      if(atPoke.weight >= dfPoke.weight*5){power = 120;}
+      else if(atPoke.weight >= dfPoke.weight*4){power = 100;}
+      else if(atPoke.weight >= dfPoke.weight*3){power = 80;}
+      else if(atPoke.weight >= dfPoke.weight*2){power = 60;}
+      else{power = 40;}
+      selectedSkill = Skill(id: skill.id, name: skill.name, power: power, type: skill.type, anotherName: skill.anotherName, classification: skill.classification);
+    }
+
     if(skill.name == 'テラバースト'){
       if(atTeraType != 'null' && atTeraType != 'ステラ'){
         var classification = teraPhysOrSpe;
@@ -3318,7 +3340,7 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
     skillList = listUpdate(myAppState.atPoke);
     if(myAppState.firstFlag){
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        myAppState.skillChanged(skillList.first);
+        myAppState.skillChanged(attackState.skill);
       });
     }
     return Column(
