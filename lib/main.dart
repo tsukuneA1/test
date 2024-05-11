@@ -83,7 +83,8 @@ class _MyApp extends State<MyApp> {
   Widget build(BuildContext context) {
     attackState = widget.atState;
     defenceState = widget.dfState;
-    listMap = widget.skills;
+    skillList = widget.skills;
+    listMap = skillList;
 
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
@@ -727,8 +728,6 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
   bool spChChecked = false;
   static const IconData changeCircle= IconData(0xef3f, fontFamily: 'MaterialIcons');
 
-  var skillList = listMap;
-
   @override
   Widget build(BuildContext context){
     var myState = context.watch<MyAppState>();
@@ -833,6 +832,7 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
       onPressed: () async{
         myState.damageList = [];
         myState.widgetList = [];
+        myState.firstFlag = true;
         savedDamageList = [];
         damageWidgetList = [];
         minMaxSumList = [];
@@ -1311,6 +1311,7 @@ class _PokeDetailWidgetState extends State<PokeDetailWidget> {
                   child: InkWell(
                     onTap: (){
                       if(atState.aOrD == 'at'){
+                        myState.firstFlag = true;
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => PokeSelect(dfState: dfState),
                             settings: RouteSettings(
@@ -3338,9 +3339,11 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
   Widget build(BuildContext context){
     var myAppState = context.watch<MyAppState>();
     skillList = listUpdate(myAppState.atPoke);
+    var firstText = myAppState.selectedSkill.name;
     if(myAppState.firstFlag){
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        myAppState.skillChanged(attackState.skill);
+        myAppState.skillChanged(skillList.first);
+        firstText = skillList.first.name;
       });
     }
     return Column(
@@ -3382,7 +3385,7 @@ class _SkillDialogWidgetState extends State<SkillDialogWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Autocomplete<Skill>(
-                      initialValue: TextEditingValue(text: myAppState.selectedSkill.name),
+                      initialValue: TextEditingValue(text: firstText),
                       displayStringForOption: _displaySkillStringForOption,
                       optionsBuilder: (TextEditingValue textEditingValue) { // 3.
                         if (textEditingValue.text == '') {
